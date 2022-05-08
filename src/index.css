@@ -7,6 +7,43 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+p {
+  color:aliceblue;
+}
+
+body {
+  background-color: black;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+}
+
+.square {
+  background:rgb(240, 50, 50);
+  border: 1px solid grey;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+  height: 34px;
+}
+
+.board-row button {
+  margin: 2px;
+  padding: 2px;
+}
+
+.board-grid {
+  display: grid;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
