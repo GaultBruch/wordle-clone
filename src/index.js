@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 class Board extends React.Component {
+    //Board is passed props = {textlist} /* Might also want to pass it the word given to check completion, not sure yet. */
     constructor(props) {
         super(props);
         this.state = {
@@ -16,32 +17,98 @@ class Board extends React.Component {
         };
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.checkWord = this.checkWord.bind(this);
+        this.checkList = this.checkList.bind(this);
     }
 
-    checkWord(word) {
-        let wordSlice = this.state.squares.slice(this.state.counter-5,this.state.counter)
-        //wordSlice = wordSlice.join('');
+    checkList() {
+        /* DOCSTRING: This function takes in a potential word from the board and outputs a true or false value based on whether or not that word is in the wordlist.
+        The intention of this function is to provide a check for submitted words, and only allow words to be submitted if they are actually a word given in the wordlist.
+        Input: (word) string, in this case sliced based on the squares state, not brought in from parameters. 
+        Ouput: Boolean True or False === word in wordList
+
+        Potential Improvement. Pseudo-hashmapping of the wordlist could improve searchability, as this loops currently over the entire wordlist, and is slow.
+        */
+
+        let wordSlice = this.state.squares.slice(this.state.counter-5,this.state.counter);
+        let wordSliceString = wordSlice.join('');
+        console.log(wordSliceString);
+        console.log('checkList wordSlice'+wordSlice);
+        console.log('Checking List for word');
+        console.log(this.props.textList);
+        for (var i = 0 ; i < this.props.textList.length ; i++) {
+            if (this.props.textList[i] === wordSliceString) {
+                console.log(wordSliceString);
+                console.log('This is a valid word in the wordlist');
+                return true;
+            }
+        }
+        console.log('this is not a valid word');
+        return false;
+    }
+
+    checkWord(wordAnswer) {
+        /* DOCSTRING: This function is provided the correctword from the game state, and checks the last submitted line from the player to see which letters match up. Returns an array
+        with information about the state of letters through correct, incorrect, wrong location strings. Correct letters are in the correct place from the user guess, wrong location are
+        in the game word, but in the wrong order, and incorrect letters are not in the word at all.
+        Input: Answer Word
+        Output: Array[5] with Correct, in word, wrong strings for each letter in the player guess
+        */
+        console.log(wordAnswer);
+        let wordSlice = this.state.squares.slice(this.state.counter-5,this.state.counter);
+        let wordSliceCopy = wordSlice.slice(); //Make a secondary copy to ensure pop doesn't screw iteration
+        let guessArray = wordAnswer.split('');
+        console.log('guessArray= ' + guessArray);
+        let checkArray = [null,null,null,null,null];
         console.log(wordSlice);
         //edit squares by adding id value and pass in exact, right, wrong in.
-        for (const letter in word) {
-            if (wordSlice.includes(letter)) {
-                wordSlice.pop(letter);
-                console.log({letter} + " was part of the word!");
+
+        for (let i = 0; i < guessArray.length; i++) {
+            if (wordAnswer.includes(wordSlice[i])) {
+                console.log(wordSlice[i] + ' was part of the word!');
+                checkArray[i] = 'in word';
+            } else {
+                checkArray[i] = 'wrong';
             }
-
         }
-            
+        
+        //We've checked each letter to see that it is in the word, but we should also check whether or not it is in the right location if it is we'll overwrite the 'in word' 
 
+        for (let i = 0; i < guessArray.length; i++) {
+            if (wordSliceCopy[i]=== guessArray[i]) {
+                checkArray[i] = 'correct';
+            }
+        }
+        console.log('Final Checkarray ' + checkArray);
+        return checkArray;
     }
 
     handleKeyPress(e) {
-        if (e.which===13 && this.state.counter%5 ===0 && this.state.counter < 30) {
-            console.log("Try Guess, note this doesn't check for whether the word is in the list yet.");
-            //this.checkWord(this.props.word)
-            this.setState(() => ({
-                wordCounter: 0,
+        // Deals with backspace key, only goes up to the last line
+        if (e.which===8 && this.state.wordCounter > 0) {
+            console.log(this.props.word);
+            const newSquares = this.state.squares.slice();
+            newSquares[this.state.counter-1] = null;
+            this.setState(()=> ({
+                counter: this.state.counter -1,
+                wordCounter: this.state.wordCounter -1,
+                squares: newSquares, 
             }));
+        }
+
+        //Deals with the enter key. Checks if word is in wordlist, should also check letter styling by calling checkfunction
+        if (e.which===13 && this.state.counter%5 ===0 && this.state.counter < 30) {
+            console.log('This props word'+this.props.word);
+            if (this.checkList() === true) {
+                this.checkWord(this.props.word);
+                this.setState(() => ({
+                    wordCounter: 0,
+                    counter: this.state.counter +0,
+                }));
             
+            } else {
+                //Render warning, not a valid word
+            }
+
         } else if (((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <=122))  && this.state.counter < 30 && this.state.wordCounter <5) {
             const newSquares = this.state.squares.slice();
             newSquares[this.state.counter] = e.key;
@@ -53,7 +120,7 @@ class Board extends React.Component {
             }));
             console.log(this.state.squares);
             
-            console.log('Keypressed ' + e.key)
+            console.log('Keypressed: ' + e.key)
         } else {
             console.log('Keypressed is not a known key: ' + e.which);
         }
@@ -135,7 +202,7 @@ function getTextFromFile(url) { //Fetch function used to get text from combined 
     });
 }
 
-
+/*
 class WordPicker extends React.Component {
     constructor(props) {
         super(props);
@@ -157,30 +224,58 @@ class WordPicker extends React.Component {
         );
         
     }
-}
+} */
 
 
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {guessNumber: 0, word: ''};
+        this.state = {guessNumber: 0, word: 'green', list: []};
         this.getRandomWord = this.getRandomWord.bind(this);
-        
+        this.handler = this.handler.bind(this);
+    }
+
+    handler(e) {
+        this.getRandomWord(e.target.value);
+        console.log(this.state);
+    }
+
+    componentDidMount() {
+        getTextFromFile('combined_wordlist.txt').then(res => {
+            let textList = res.split("\n");
+            this.setState({
+                word: textList[Math.floor(Math.random() *textList.length)],
+                list: textList,
+            
+        })
+        console.log('this.state.word1 ' + this.state.word);
+        });
     }
 
     getRandomWord() {
         getTextFromFile('combined_wordlist.txt').then(res => {
             let textList = res.split("\n");
-            this.setState( {word: textList[Math.floor(Math.random() *textList.length)]}) 
+            this.setState({
+                word: textList[Math.floor(Math.random() *textList.length)],
+                list: textList,
+            
+        })
+        console.log('this.state.word1 ' + this.state.word);
         });
     }
+
+
 
     render() {
         return (
             <div className='game'>
                 <div className='game-board'>
-                    <WordPicker getRandomWord={this.getRandomWord} word={this.state.word}/>
-                    <Board />
+                    <button onClick={this.handler}>
+                    Get new word?
+                    </button>
+                    <p>Your Word is: {this.state.word}</p>
+                    {/*<WordPicker getRandomWord={this.getRandomWord} word={this.state.word}/>*/}
+                    <Board textList = {this.state.list} word={this.state.word}/>
                 </div>
             </div>
         )
