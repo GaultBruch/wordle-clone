@@ -7,6 +7,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1 {
+  color: aliceblue;
+  border-bottom: solid 1px aliceblue;
+}
+
+button {
+  margin: 1rem;
+}
+
 p {
   color:aliceblue;
 }
