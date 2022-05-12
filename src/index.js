@@ -20,6 +20,27 @@ class Board extends React.Component {
         this.checkWord = this.checkWord.bind(this);
         this.checkList = this.checkList.bind(this);
         this.handleStyleAdd = this.handleStyleAdd.bind(this);
+        this.handleCheckWin = this.handleStyleAdd.bind(this);
+    }
+
+    checkWin(array) {
+        /*DOCSTRING: Takes in an array of correct, inword, wrong, if all values are correct then the player has won.
+        This should be passed up to the gamestate. Also, if the board has filled up (checked via counter) and the 
+        the state is not all correct then we can send a 'lost' string back instead.
+        Input: Array[5]
+        Output: 0, 1 ,2 for playing, won, lost */
+        let statusCode = 0;
+        console.log(this.state.counter);
+        console.log(array);
+        console.log('array2 inlcudes '+ array.includes("wrong"));
+        if (array.includes('wrong')===true || array.includes('inWord')) {
+            console.log(this.props.counter);
+            if (this.state.counter >= 30) {statusCode = 2;}
+            if (this.state.counter < 30) {statusCode = 0;}
+        } else {
+            statusCode = 1;
+        }
+        this.props.changeStatusCode(statusCode);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -137,11 +158,12 @@ class Board extends React.Component {
                 if (this.checkList() === true) {
                     let checkArray = this.checkWord(this.props.word);
                     this.handleStyleAdd(checkArray[0]);
-                    this.props.checkWin(checkArray[1]);
+                    this.checkWin(checkArray[1]);
                     this.setState(() => ({
                         wordCounter: 0,
                         counter: this.state.counter + 0,
                     }));
+                    console.log("counter " + this.state.counter);
                 
                 } else {
                     //Render warning, not a valid word
@@ -149,7 +171,7 @@ class Board extends React.Component {
 
             } else if (((e.which >= 65 && e.which <= 90) || (e.which >= 97 && e.which <=122))  && this.state.counter < 30 && this.state.wordCounter <5) {
                 const newSquares = this.state.squares.slice();
-                newSquares[this.state.counter] = e.key;
+                newSquares[this.state.counter] = e.key.toLowerCase();
                 
                 this.setState((state) => ({
                     wordCounter: state.wordCounter + 1,
@@ -245,6 +267,7 @@ class Game extends React.Component {
         this.handler = this.handler.bind(this);
         this.checkWin = this.checkWin.bind(this);
         this.resetGameState = this.resetGameState.bind(this);
+        this.changeStatusCode = this.changeStatusCode.bind(this);
         /*
         this.doIt = this.doIt.bind(this);
         this.doFirst = this.doFirst.bind(this);
@@ -256,6 +279,11 @@ class Game extends React.Component {
         console.log(this.state);
     }
 
+    changeStatusCode(status) {
+        //StatusCodeChange passed to board so that I can use the counter, and then pass the returned status to this function
+        this.setState({gameState: status,})
+    }
+
     checkWin(array) {
         /*DOCSTRING: Takes in an array of correct, inword, wrong, if all values are correct then the player has won.
         This should be passed up to the gamestate. Also, if the board has filled up (checked via counter) and the 
@@ -265,16 +293,15 @@ class Game extends React.Component {
         let statusCode = 0;
         console.log(this.state.counter);
         console.log(array);
-        console.log(array.includes("wrong"));
+        console.log('array2 inlcudes '+ array.includes("wrong"));
         if (array.includes('wrong')===true || array.includes('inWord')) {
-           if (this.state.counter === 30) {statusCode = 2;}
-           if (this.state.counter < 30) {statusCode = 0;}
+            console.log(this.props.counter);
+            if (this.state.counter >= 30) {statusCode = 2;}
+            if (this.state.counter < 30) {statusCode = 0;}
         } else {
             statusCode = 1;
         }
-        this.setState({
-            gameState: statusCode,
-        });
+        return statusCode;
     }
 
     componentDidMount() {
@@ -357,13 +384,14 @@ class Game extends React.Component {
 
         return (
             <div className='game'>
+                
                 <div className='game-board'>
-                    <h1>Wordle Clone</h1>
-                    <button onClick={this.handler}>
+                    
+                    <button onClick={this.resetGameState}>
                     Get new word?
                     </button>
                     {/*<WordPicker getRandomWord={this.getRandomWord} word={this.state.word}/>*/}
-                    <Board textList = {this.state.list} word={this.state.word} gameState={this.state.gameState} checkWin={this.checkWin}/>
+                    <Board textList = {this.state.list} word={this.state.word} gameState={this.state.gameState} changeStatusCode={this.changeStatusCode}/>
                     {gameStatus}
                     <p>{this.state.gameState}</p>
                 </div>

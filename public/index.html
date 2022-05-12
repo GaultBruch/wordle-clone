@@ -14,8 +14,20 @@
     <title>Wordle In React</title>
   </head>
   <body>
-
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <h1> Wordle Clone</h1>
+      <section>
+        <article>
+          <h2>Created by Gault Bruch</h2>
+          <p>This Wordle Clone was created using an underlying React architecture for my developer portfolio, and is based on the <a href="https://en.wikipedia.org/wiki/Wordle">game by the same name created by Josh Wardle.</a> It has since been bought out by the <a href="https://www.nytimes.com/games/wordle/index.html">New York Times, and is hosted on their website.</a> It was created 
+          for my developer portfolio as my first introductory project to wordle.</p>
+          <p>With this being my first react project, it was an opportunity to learn a lot about state and props. For instance, in this game the board state is stored by the container for the squares, but the 
+            word and state of the game is stored in the encapsulating game class with the button. This separatation of the two states was not strictly necessary, but more for learning purposes, as the entire piece of code could be
+            easily encapsulated under one class. It led to the necessity of a listener for prop changes in the board class, which helped to get a better understanding of working with state. All components were made as classes, no 
+            significant react hooks were used, as they're later in the docs then I had gotten to at the time of creating this.
+          </p>
+        </article>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+      </section>
   </body>
 </html>

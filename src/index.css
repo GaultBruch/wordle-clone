@@ -10,10 +10,28 @@ body {
 h1 {
   color: aliceblue;
   border-bottom: solid 1px aliceblue;
+  text-align: center;
+  background-color:rgb(22, 22, 22);
+  padding-top:1rem;
+  margin-top: 0;
+}
+
+section {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 1rem;
+}
+
+h2 {
+  color: aliceblue;
 }
 
 button {
   margin: 1rem;
+  background-color:rgb(49, 49, 49);
+  text-align: center;
+  text-decoration: center;
+  color: aliceblue;
 }
 
 p {
@@ -38,8 +56,7 @@ body {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
+  margin: 4px;
   padding: 0;
   text-align: center;
   width: 40px;
