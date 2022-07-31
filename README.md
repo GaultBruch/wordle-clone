@@ -1,1 +1,6 @@
 # wordle-clone
+This project was created as one of my first projects in react. It uses the older class based architecture for components rather than hooks. It was a testing bed for the new react concepts I was learning, so potentially contains some poor code.
+
+The idea behind the file structure is that the state is broken into 3 components, the game > the board > the squares. The squares are solely used for displaying information when the user presses a key. The board handles rendering of squares, and handling of keypresses to check for validity of keypresses, and to see if the word is the correct word to win the game. The game itself handles what that word is, the current state of the game (win or lose), and the creation of a new gamestate.
+
+For the actual wordlist, I just found one randomly off the internet for 5 letter words. The actual wordle list contains not only a list of 5 letter words (~11k words in english) but also a much smaller set of winning words which the actual game winning words are picked from (~2k). For my site, I found that to be a rather boring thing (although implementing this is only a few clicks away if necessary), so I opted for the entire range of characters.
