@@ -268,10 +268,6 @@ class Game extends React.Component {
         this.checkWin = this.checkWin.bind(this);
         this.resetGameState = this.resetGameState.bind(this);
         this.changeStatusCode = this.changeStatusCode.bind(this);
-        /*
-        this.doIt = this.doIt.bind(this);
-        this.doFirst = this.doFirst.bind(this);
-        this.doSecond = this.doSecond.bind(this); */
     }
 
     handler(e) {
@@ -393,7 +389,7 @@ class Game extends React.Component {
                     {/*<WordPicker getRandomWord={this.getRandomWord} word={this.state.word}/>*/}
                     <Board textList = {this.state.list} word={this.state.word} gameState={this.state.gameState} changeStatusCode={this.changeStatusCode}/>
                     {gameStatus}
-                    <p>{this.state.gameState}</p>
+                    
                 </div>
             </div>
         )
